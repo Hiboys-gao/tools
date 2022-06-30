@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/big"
 )
@@ -127,4 +128,13 @@ func AddInt(x *big.Int, y int64) *big.Int {
 	r := new(big.Int)
 	r = r.Add(x, big.NewInt(y))
 	return r
+}
+
+func DeepCopyByJson(dest, src interface{}) error {
+	b, err := json.Marshal(src)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(b, dest)
+	return err
 }
