@@ -5,6 +5,9 @@ import (
 	"encoding/hex"
 	"fmt"
 	"time"
+
+	"github.com/gofrs/uuid"
+
 )
 
 func MD5V(str []byte) string {
@@ -22,4 +25,12 @@ func GenerateMD5Idf(format string, args ...interface{}) string {
 func MD5ByTimeNow() string {
 	timeStr := time.Now().String()
 	return MD5V([]byte(timeStr))
+}
+
+func UuidV4() (string, error) {
+	u4, err := uuid.NewV4()
+	if err != nil {
+		return "", err
+	}
+	return u4.String(), nil
 }

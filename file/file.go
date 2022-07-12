@@ -8,10 +8,6 @@ import (
 	"os"
 )
 
-func File() {
-	fmt.Println("--------------")
-}
-
 func CopyFile(copyFileName, toFileName string, perm fs.FileMode) error {
 	if copyFileName == "" || toFileName == "" {
 		return fmt.Errorf("文件路径不能为空")
