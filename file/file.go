@@ -6,6 +6,9 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
+
+	"github.com/360EntSecGroup-Skylar/excelize"
+	"github.com/shakinm/xlsReader/xls"
 )
 
 func CopyFile(copyFileName, toFileName string, perm fs.FileMode) error {
@@ -63,5 +66,49 @@ func FileIsExist(path string) bool {
 		return false
 	} else {
 		return !s.IsDir()
+	}
+}
+
+func Mkdir(dir string) error {
+	return os.Mkdir(dir, os.ModePerm)
+}
+
+func ExcelRowsData_XLSX(file_path string) ([][]string, error) {
+	if FileIsExist(file_path) {
+		xlsx, err := excelize.OpenFile(file_path)
+		if err != nil {
+			return [][]string{}, err
+		}
+		sheetName := xlsx.GetSheetName(1)
+		dataList := xlsx.GetRows(sheetName)
+		return dataList, nil
+	} else {
+		return [][]string{}, fmt.Errorf("FileIsExist 不存在 file_path:  %s", file_path)
+	}
+}
+
+func ExcelRowsData_XLS(file_path string) ([][]string, error) {
+	if FileIsExist(file_path) {
+		d, _ := xls.OpenFile(file_path)
+		sheet, _ := d.GetSheet(0)
+		rows := sheet.GetRows()
+		var data [][]string
+		for _, row := range rows {
+			if row == nil {
+				continue
+			}
+			var rowData []string
+			for _, ele := range row.GetCols() {
+				if ele == nil {
+					rowData = append(rowData, "")
+				} else {
+					rowData = append(rowData, ele.GetString())
+				}
+			}
+			data = append(data, rowData)
+		}
+		return data, nil
+	} else {
+		return [][]string{}, fmt.Errorf("FileIsExist 不存在 file_path:  %s", file_path)
 	}
 }
